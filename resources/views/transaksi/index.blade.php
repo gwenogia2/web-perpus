@@ -5,7 +5,6 @@
 <div class="card p-4">
     <div class="d-flex justify-content-between mb-3">
         <h4>Data Transaksi</h4>
-        <a href="/transaksi/create" class="btn btn-primary">+ Pinjam</a>
     </div>
 
     <table class="table table-hover">

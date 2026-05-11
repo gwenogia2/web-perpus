@@ -23,4 +23,18 @@ class DashboardController extends Controller
         'totalDenda'
     ));
 }
+
+    public function siswa()
+{
+    $totalBuku = DB::table('buku')->count();
+
+    $dipinjam = DB::table('transaksi')
+        ->where('user_id', session('user_id'))
+        ->count();
+
+    return view('dashboard.siswa', compact(
+        'totalBuku',
+        'dipinjam'
+    ));
+}
 }

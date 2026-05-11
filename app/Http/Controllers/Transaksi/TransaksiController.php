@@ -84,9 +84,11 @@ class TransaksiController extends Controller
                 ->where('id', $buku_id)
                 ->decrement('stok', $qty);
         }
+
     });
 
-    return redirect('/transaksi');
+    return redirect('/pinjam')
+            ->with('success', 'Berhasil.');
 }
     //KEMBALIKAN SEMUA BUKU
     public function kembali($id)
@@ -132,5 +134,19 @@ class TransaksiController extends Controller
         ->get();
 
     return view('transaksi.detail', compact('transaksi', 'detail'));
+}
+
+public function pinjam()
+{
+    $anggota = DB::table('anggota')->get();
+
+    $buku = DB::table('buku')
+        ->where('stok', '>', 0)
+        ->get();
+
+    return view('siswa.pinjam', compact(
+        'anggota',
+        'buku'
+    ));
 }
 }

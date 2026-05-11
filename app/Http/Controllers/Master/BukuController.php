@@ -58,4 +58,11 @@ class BukuController extends Controller
         DB::table('buku')->where('id', $id)->delete();
         return redirect('/buku');
     }
+
+    public function list()
+{
+    $buku = DB::table('buku')->get();
+
+    return view('buku.list', compact('buku'));
+}
 }
