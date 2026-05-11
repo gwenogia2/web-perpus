@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Buku;
 
 class BukuController extends Controller
 {
     public function index()
     {
-        $buku = DB::table('buku')->get();
+        $buku = Buku::all();
         return view('buku.index', compact('buku'));
     }
 
@@ -21,7 +21,7 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
-        DB::table('buku')->insert([
+        Buku::create([
             'judul' => $request->judul,
             'penulis' => $request->penulis,
             'penerbit' => $request->penerbit,
@@ -34,35 +34,36 @@ class BukuController extends Controller
 
     public function edit($id)
     {
-        $buku = DB::table('buku')->where('id', $id)->first();
+        $buku = Buku::findOrFail($id);
         return view('buku.edit', compact('buku'));
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('buku')
-            ->where('id', $id)
-            ->update([
-                'judul' => $request->judul,
-                'penulis' => $request->penulis,
-                'penerbit' => $request->penerbit,
-                'tahun' => $request->tahun,
-                'stok' => $request->stok,
-            ]);
+        $buku = Buku::findOrFail($id);
+
+        $buku->update([
+            'judul' => $request->judul,
+            'penulis' => $request->penulis,
+            'penerbit' => $request->penerbit,
+            'tahun' => $request->tahun,
+            'stok' => $request->stok,
+        ]);
 
         return redirect('/buku');
     }
 
     public function destroy($id)
     {
-        DB::table('buku')->where('id', $id)->delete();
+        Buku::findOrFail($id)->delete();
+
         return redirect('/buku');
     }
 
     public function list()
-{
-    $buku = DB::table('buku')->get();
+    {
+        $buku = Buku::all();
 
-    return view('buku.list', compact('buku'));
-}
+        return view('buku.list', compact('buku'));
+    }
 }
