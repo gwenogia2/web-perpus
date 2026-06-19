@@ -4,11 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Master\AnggotaController;
 use App\Http\Controllers\Master\BukuController;
 
 use App\Http\Controllers\Transaksi\TransaksiController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
 
 //auth
 Route::get('/login', [AuthController::class, 'showLogin']);
@@ -21,6 +25,15 @@ Route::middleware(['auth.check', 'role:admin'])->group(function () {
 
     // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard-siswa', [DashboardController::class, 'siswa']);
+
+    //user
+    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user/create', [UserController::class, 'create']);
+    Route::post('/user/store', [UserController::class, 'store']);
+    Route::get('/user/edit/{id}', [UserController::class, 'edit']);
+    Route::post('/user/update/{id}', [UserController::class, 'update']);
+    Route::get('/user/delete/{id}', [UserController::class, 'destroy']);
 
     //anggota
     Route::get('/anggota', [AnggotaController::class, 'index']);
@@ -67,3 +80,5 @@ Route::middleware(['auth.check', 'role:siswa'])->group(function () {
     Route::post('/pinjam/store', [TransaksiController::class, 'store']);
 
 });
+
+Route::get('/home', function () { return view('home'); });

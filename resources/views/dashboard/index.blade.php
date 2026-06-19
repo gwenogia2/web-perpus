@@ -75,7 +75,7 @@
         </h2>
 
         <p class="dashboard-subtitle">
-            Selamat datang kembali, {{ session('username') }}
+            Selamat datang kembali
         </p>
 
     </div>

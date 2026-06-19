@@ -11,7 +11,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role): Response
     {
         if (session('role') != $role) {
-            abort(403);
+            abort(403, "Anda tidak memiliki akses ke halaman ini.");
         }
 
         return $next($request);
