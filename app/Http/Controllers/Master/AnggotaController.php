@@ -10,7 +10,8 @@ class AnggotaController extends Controller
 {
     public function index()
     {
-        $anggota = Anggota::all();
+        $anggota = Anggota::getAll();
+
         return view('anggota.index', compact('anggota'));
     }
 
@@ -21,38 +22,44 @@ class AnggotaController extends Controller
 
     public function store(Request $request)
     {
-        Anggota::create([
+        $data = [
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-        ]);
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
 
-        return redirect('/anggota');
+        Anggota::simpan($data);
+
+        return redirect('/anggota')->with('sukses', 'Data anggota berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        $anggota = Anggota::findOrFail($id);
+        $anggota = Anggota::findById($id);
+
         return view('anggota.edit', compact('anggota'));
     }
 
     public function update(Request $request, $id)
     {
-        $anggota = Anggota::findOrFail($id);
-
-        $anggota->update([
+        $data = [
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-        ]);
+            'updated_at' => now()
+        ];
 
-        return redirect('/anggota');
+        Anggota::ubah($id, $data);
+
+        return redirect('/anggota')->with('sukses', 'Data anggota berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        Anggota::findOrFail($id)->delete();
+        Anggota::hapus($id);
 
-        return redirect('/anggota');
+        return redirect('/anggota')->with('sukses', 'Data anggota berhasil dihapus!');
     }
 }

@@ -21,9 +21,8 @@
         @foreach($transaksi as $t)
         <tr>
             <td>{{ $loop->iteration }}</td>
-            <td>{{ $t->anggota->nama ?? 'Data Anggota Dihapus' }}</td>
-
-            <td>{{ $t->buku->judul ?? 'Data Buku Dihapus' }}</td>
+            <td>{{ $t->nama_anggota ?? '' }}</td>
+            <td>{{ $t->judul_buku ?? '' }}</td>
             <td>
                 @if($t->status == 'pinjam')
                     <span class="badge bg-warning text-dark">Dipinjam</span>
@@ -32,10 +31,6 @@
                 @endif
             </td>
             <td>
-                <a href="{{ url('/transaksi/detail/'.$t->id) }}" class="btn btn-dark btn-sm">
-                    Detail
-                </a>
-
                 <a href="{{ url('/transaksi/edit/'.$t->id) }}" class="btn btn-primary btn-sm">
                     Edit
                 </a>

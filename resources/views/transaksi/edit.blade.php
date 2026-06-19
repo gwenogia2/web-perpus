@@ -35,7 +35,7 @@
                             <label class="form-label fw-bold">Judul Buku</label>
                             <select name="buku_id" class="form-select" required>
                                 @foreach($buku as $b)
-                                    <option value="{{ $b->id }}" {{ $transaksi->buku_id == $b->id ? 'selected' : '' }}>
+                                    <option value="{{ $b->id_buku }}" {{ $transaksi->buku_id == $b->id_buku ? 'selected' : '' }}>
                                         {{ $b->judul }} (Stok: {{ $b->stok }})
                                     </option>
                                 @endforeach

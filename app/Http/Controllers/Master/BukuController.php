@@ -10,7 +10,8 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $buku = Buku::all();
+        $buku = Buku::getAll();
+
         return view('buku.index', compact('buku'));
     }
 
@@ -21,48 +22,54 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
-        Buku::create([
+        $data = [
             'judul' => $request->judul,
             'penulis' => $request->penulis,
             'penerbit' => $request->penerbit,
             'tahun' => $request->tahun,
             'stok' => $request->stok,
-        ]);
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
 
-        return redirect('/buku');
+        Buku::simpan($data);
+
+        return redirect('/buku')->with('sukses', 'Data buku berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        $buku = Buku::findOrFail($id);
+        $buku = Buku::findById($id);
+
         return view('buku.edit', compact('buku'));
     }
 
     public function update(Request $request, $id)
     {
-        $buku = Buku::findOrFail($id);
-
-        $buku->update([
+        $data = [
             'judul' => $request->judul,
             'penulis' => $request->penulis,
             'penerbit' => $request->penerbit,
             'tahun' => $request->tahun,
             'stok' => $request->stok,
-        ]);
+            'updated_at' => now()
+        ];
 
-        return redirect('/buku');
+        Buku::ubah($id, $data);
+
+        return redirect('/buku')->with('sukses', 'Data buku berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        Buku::findOrFail($id)->delete();
+        Buku::hapus($id);
 
-        return redirect('/buku');
+        return redirect('/buku')->with('sukses', 'Data buku berhasil dihapus!');
     }
 
     public function list()
     {
-        $buku = Buku::all();
+        $buku = Buku::getAll();
 
         return view('buku.list', compact('buku'));
     }

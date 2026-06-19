@@ -28,10 +28,7 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Password Baru</label>
-                            <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin diubah">
-                            <small class="text-muted d-block mt-1">
-                                <i class="fas fa-info-circle"></i> Jika diisi, password baru akan otomatis dienkripsi menggunakan XOR.
-                            </small>
+                            <input type="password" name="password" class="form-control" placeholder="Isi password baru">
                         </div>
 
                         <div class="mb-4">

@@ -28,8 +28,8 @@
                 <span class="badge bg-dark">{{ $b->stok }}</span>
             </td>
             <td>
-                <a href="/buku/edit/{{ $b->id }}" class="btn btn-warning btn-sm">Edit</a>
-                <a href="/buku/delete/{{ $b->id }}" class="btn btn-danger btn-sm">Hapus</a>
+                <a href="/buku/edit/{{ $b->id_buku }}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="/buku/delete/{{ $b->id_buku }}" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus buku ini?')">Hapus</a>
             </td>
         </tr>
         @endforeach

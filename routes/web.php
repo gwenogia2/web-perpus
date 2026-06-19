@@ -80,7 +80,7 @@ Route::middleware(['auth.check', 'role:siswa'])->group(function () {
     // pinjam buku
     Route::get('/pinjam', [TransaksiController::class, 'pinjam']);
 
-    Route::post('/pinjam/store', [TransaksiController::class, 'store']);
+    Route::post('/transaksi/store', [TransaksiController::class, 'store']);
 
   });
 

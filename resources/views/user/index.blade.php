@@ -54,7 +54,7 @@
                                     <a href="{{ url('/user/edit/'.$row->id) }}" class="btn btn-warning btn-sm fw-bold text-dark me-1">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <a href="{{ url('/user/delete/'.$row->id) }}" class="btn btn-danger btn-sm fw-bold" onclick="return confirm('Yakin ingin menghapus user ini?')">
+                                    <a href="{{ url('/user/delete/'.$row->id) }}" class="btn btn-danger btn-sm fw-bold" onclick="return confirm('Yakin ingin menghapus?')">
                                         <i class="fas fa-trash-alt"></i> Hapus
                                     </a>
                                 </td>

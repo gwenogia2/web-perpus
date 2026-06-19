@@ -4,84 +4,73 @@ namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Transaksi;
-use App\Models\Buku;
-use App\Models\Anggota;
 
 class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksi = Transaksi::with(['anggota', 'buku'])
-            ->latest('id')
-            ->get();
-
-        dd($transaksi->toArray());
+        $transaksi = Transaksi::getAllWithRelations();
 
         return view('transaksi.index', compact('transaksi'));
     }
 
     public function create()
     {
-        $anggota = Anggota::all();
-        $buku = Buku::all();
+        $anggota = DB::table('anggota')->get();
+        $buku = DB::table('buku')->get();
 
         return view('transaksi.create', compact('anggota', 'buku'));
     }
 
     public function store(Request $request)
     {
-        $buku = Buku::findOrFail($request->buku_id);
+        $buku = DB::table('buku')->where('id_buku', $request->buku_id)->first();
 
-        if ($buku->stok <= 0) {
-            return back()->with('error', 'Stok buku habis!');
+        if (!$buku || $buku->stok <= 0) {
+            return back()->with('error', 'Stok buku habis atau tidak ditemukan!');
         }
 
+        $data = [
+            'anggota_id' => $request->anggota_id,
+            'buku_id' => $request->buku_id,
+            'user_id' => session('user_id') ?? 1,
+            'tanggal_pinjam' => now(),
+            'status' => 'pinjam',
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
 
-        (new Transaksi)->getConnection()->transaction(function () use ($request, $buku) {
-            Transaksi::create([
-                'anggota_id' => $request->anggota_id,
-                'buku_id' => $request->buku_id,
-                'user_id' => session('user_id'),
-                'tanggal_pinjam' => now(),
-                'status' => 'pinjam'
-            ]);
+        Transaksi::simpanPeminjaman($data, $request->buku_id);
 
-            $buku->decrement('stok');
-    });
-
-        return redirect('/transaksi');
+        return redirect('/pinjam')->with('sukses', 'Berhasil meminjam buku!');
     }
 
     public function pinjam()
     {
-        $buku = Buku::where('stok', '>', 0)->get();
+        $anggota = DB::table('anggota')->get();
+        $buku = DB::table('buku')->where('stok', '>', 0)->get();
 
-        return view('transaksi.index', compact('buku'));
+        return view('transaksi.create', compact('anggota', 'buku'));
     }
 
     public function kembali($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
+        $transaksi = Transaksi::findById($id);
 
-        // PERBAIKAN DI SINI
-        (new Transaksi)->getConnection()->transaction(function () use ($transaksi) {
-            $transaksi->update([
-                'status' => 'kembali',
-                'tanggal_kembali' => now()
-            ]);
+        if ($transaksi) {
+            Transaksi::prosesPengembalian($transaksi);
+        }
 
-            $transaksi->buku->increment('stok');
-        });
-
-        return redirect('/transaksi');
+        return redirect('/transaksi')->with('sukses', 'Buku berhasil dikembalikan!');
     }
 
     public function edit($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
-        $anggota = Anggota::all();
-        $buku = Buku::all();
+        $transaksi = Transaksi::findById($id);
+        $anggota = DB::table('anggota')->get();
+        $buku = DB::table('buku')->get();
 
         return view('transaksi.edit', compact('transaksi', 'anggota', 'buku'));
     }
@@ -94,29 +83,20 @@ class TransaksiController extends Controller
             'status' => 'required'
         ]);
 
-        $transaksi = Transaksi::findOrFail($id);
+        $transaksiLama = Transaksi::findById($id);
+        $buku = DB::table('buku')->where('id_buku', $request->buku_id)->first();
 
-        // PERBAIKAN DI SINI
-        (new Transaksi)->getConnection()->transaction(function () use ($request, $transaksi) {
-            if ($request->status == 'kembali' && $transaksi->status == 'pinjam') {
-                $transaksi->buku->increment('stok');
-                $transaksi->tanggal_kembali = now();
-            }
-            elseif ($request->status == 'pinjam' && $transaksi->status == 'kembali') {
-                if ($transaksi->buku->stok <= 0) {
-                    return back()->with('error', 'Gagal mengubah status. Stok buku ini sedang kosong!');
-                }
-                $transaksi->buku->decrement('stok');
-                $transaksi->tanggal_kembali = null;
-            }
+        if ($request->status == 'pinjam' && $transaksiLama->status == 'kembali' && (!$buku || $buku->stok <= 0)) {
+            return back()->with('error', 'Gagal mengubah status. Stok buku ini sedang kosong!');
+        }
 
-            $transaksi->update([
-                'anggota_id' => $request->anggota_id,
-                'buku_id' => $request->buku_id,
-                'status' => $request->status,
-                'tanggal_kembali' => $transaksi->tanggal_kembali
-            ]);
-        });
+        $requestData = [
+            'anggota_id' => $request->anggota_id,
+            'buku_id' => $request->buku_id,
+            'status' => $request->status
+        ];
+
+        Transaksi::updateTransaksi($id, $requestData, $transaksiLama);
 
         return redirect('/transaksi')->with('sukses', 'Data transaksi berhasil diperbarui!');
     }
