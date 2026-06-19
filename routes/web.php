@@ -64,8 +64,11 @@ Route::middleware(['auth.check', 'role:admin'])->group(function () {
     Route::get('/transaksi/kembali/{id}', [TransaksiController::class, 'kembali']);
 
     Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'detail']);
-});
 
+    //transaksi admin
+    Route::get('/transaksi/edit/{id}', [TransaksiController::class, 'edit']);
+    Route::post('/transaksi/update/{id}', [TransaksiController::class, 'update']);
+});
 
 // SISWA
 Route::middleware(['auth.check', 'role:siswa'])->group(function () {
@@ -79,6 +82,8 @@ Route::middleware(['auth.check', 'role:siswa'])->group(function () {
 
     Route::post('/pinjam/store', [TransaksiController::class, 'store']);
 
-});
+  });
 
-Route::get('/home', function () { return view('home'); });
+
+
+

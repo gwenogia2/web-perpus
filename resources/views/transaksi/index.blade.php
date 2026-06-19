@@ -11,8 +11,8 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Nama</th>
-                <th>Buku</th>
+                <th>Nama Anggota</th>
+                <th>Judul Buku</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
@@ -21,8 +21,9 @@
         @foreach($transaksi as $t)
         <tr>
             <td>{{ $loop->iteration }}</td>
-            <td>{{ $t->nama }}</td>
-            <td>{{ $t->buku }}</td>
+            <td>{{ $t->anggota->nama ?? 'Data Anggota Dihapus' }}</td>
+
+            <td>{{ $t->buku->judul ?? 'Data Buku Dihapus' }}</td>
             <td>
                 @if($t->status == 'pinjam')
                     <span class="badge bg-warning text-dark">Dipinjam</span>
@@ -31,14 +32,16 @@
                 @endif
             </td>
             <td>
-                <!-- tombol detail selalu ada -->
-                <a href="/transaksi/detail/{{ $t->id }}" class="btn btn-dark btn-sm">
+                <a href="{{ url('/transaksi/detail/'.$t->id) }}" class="btn btn-dark btn-sm">
                     Detail
                 </a>
 
-                <!-- tombol kembali hanya kalau masih dipinjam -->
+                <a href="{{ url('/transaksi/edit/'.$t->id) }}" class="btn btn-primary btn-sm">
+                    Edit
+                </a>
+
                 @if($t->status == 'pinjam')
-                    <a href="/transaksi/kembali/{{ $t->id }}" class="btn btn-success btn-sm">
+                    <a href="{{ url('/transaksi/kembali/'.$t->id) }}" class="btn btn-success btn-sm">
                         Kembalikan
                     </a>
                 @endif

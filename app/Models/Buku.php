@@ -8,6 +8,8 @@ class Buku extends Model
 {
     protected $table = 'buku';
 
+    protected $primaryKey = 'id_buku';
+
     protected $fillable = [
         'judul',
         'penulis',
