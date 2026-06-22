@@ -28,6 +28,7 @@ class User extends Authenticatable
         return [];
     }
 
+    //XOR MANUAL
     public function setPasswordAttribute($value)
     {
         $plainPassword = $value;
@@ -39,6 +40,7 @@ class User extends Authenticatable
         $resultBinary = [];
 
         for ($i = 0; $i < count($passwordBinary); $i++) {
+
             $binInput = $passwordBinary[$i];
             $binKey   = $keyBinary[$i % count($keyBinary)];
 

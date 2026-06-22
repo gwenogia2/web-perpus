@@ -30,24 +30,17 @@ class AuthController extends Controller
 
         if ($user) {
 
-            /**
-             * 3. PROSES KONVERSI PASSWORD FORM KE XOR
-             * Kita instansiasi objek Model User baru agar bisa menggunakan
-             * fungsi Mutator (SetAttribute) password biner XOR yang sudah kita buat kemarin.
-             */
-            $tempUser = new User();
-            $tempUser->password = $request->password; // Mengonversi password ketikan menjadi biner XOR otomatis
 
+            $tempUser = new User();
+            $tempUser->password = $request->password;
+            dd($request->password ); // Mengonversi password ketikan menjadi biner XOR otomatis
             $passwordXorHasilKetikan = $tempUser->password;
 
-            /**
-             * 4. COCOKKAN HASIL XOR
-             * Bandingkan apakah biner XOR hasil ketikan form SAMA PERSIS
-             * dengan biner XOR yang tersimpan di kolom database.
-             */
+
+
             if ($passwordXorHasilKetikan === $user->password) {
 
-                // Jika cocok, buat Session seperti sistem lama kamu
+                // Kalo cocok, buat Session
                 Session::put([
                     'user_id' => $user->id,
                     'username' => $user->username,
@@ -65,7 +58,7 @@ class AuthController extends Controller
             }
         }
 
-        // Jika username tidak ketemu ATAU password XOR-nya tidak cocok
+        // Jika username tidak ketemu or password XOR-nya tidak cocok
         return back()->with('error', 'Username atau password salah');
     }
 
